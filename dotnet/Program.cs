@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using static Sample.Test;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +19,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+#region  Part 1 Factorial Operation Comparison b/w .Net & Python
 app.MapGet("/factorial", (int n) =>
 {
     long Factorial(int number)
@@ -26,7 +30,54 @@ app.MapGet("/factorial", (int n) =>
     long result = Factorial(n);
     return result;
 })
-.WithName("GetWeatherForecast")
+.WithName("GetFactorial")
 .WithOpenApi();
 
+#endregion
+
+#region  Part 2 Matrix Multiplication Operation Comparison b/w .Net & Python
+
+app.MapPost("/multiply", ([FromBody] Matrices data) =>
+{
+    try
+    {
+        var result = Sample.Test.MultiplyMatrices(data.Mat1, data.Mat2);
+        return Results.Ok(new { result });
+    }
+    catch (Exception e)
+    {
+        return Results.BadRequest(new { error = e.Message });
+    }
+})
+.WithName("GetMatrix")
+.WithOpenApi();
+
+#endregion
+
 app.Run();
+
+namespace Sample
+{
+    public static class Test
+    {
+        public record Matrices(int[][] Mat1, int[][] Mat2);
+        public static int[][] MultiplyMatrices(int[][] mat1, int[][] mat2)
+        {
+            int size = mat1.Length;
+            int[][] result = new int[size][];
+            for (int i = 0; i < size; i++)
+            {
+                result[i] = new int[size];
+                for (int j = 0; j < size; j++)
+                {
+                    result[i][j] = 0;
+                    for (int k = 0; k < size; k++)
+                    {
+                        result[i][j] += mat1[i][k] * mat2[k][j];
+                    }
+                }
+            }
+            return result;
+        }
+    }
+}

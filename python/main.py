@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+import numpy as np
 
 app = FastAPI()
 
@@ -9,3 +11,18 @@ def factorial(n: int) -> int:
 def get_factorial(n: int):
     result = factorial(n)
     return {"factorial": result}
+
+class Matrices(BaseModel):
+    mat1: list
+    mat2: list
+
+@app.post("/multiply/")
+def multiply_matrices(data: Matrices):
+    mat1 = np.array(data.mat1)
+    mat2 = np.array(data.mat2)
+    
+    try:
+        result = np.dot(mat1, mat2).tolist()
+        return {"result": result}
+    except ValueError as e:
+        return {"error": str(e)}
