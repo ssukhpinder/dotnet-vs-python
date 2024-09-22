@@ -67,6 +67,15 @@ app.MapPost("/average", ([FromBody] AverageClass numbers) =>
 
 #endregion
 
+#region Part 4 CPU Extensive Task
+app.MapGet("/cpu-task", () =>
+{
+    long result = 0;
+    Parallel.For(0, 1_000_000, i => result += i);
+    return new { result };
+});
+#endregion
+
 app.Run();
 
 namespace Sample

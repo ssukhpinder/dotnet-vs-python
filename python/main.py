@@ -35,3 +35,8 @@ class Numbers(BaseModel):
 def post_average(numbers: Numbers):
     return {"average": sum(numbers.numbers) / len(numbers.numbers)}
 
+
+@app.get("/cpu-task")
+async def cpu_task():
+    result = sum([i for i in range(1_000_000)])
+    return {"result": result}
