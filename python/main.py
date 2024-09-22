@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
+from typing import List
 
 app = FastAPI()
 
@@ -26,3 +27,11 @@ def multiply_matrices(data: Matrices):
         return {"result": result}
     except ValueError as e:
         return {"error": str(e)}
+
+class Numbers(BaseModel):
+    numbers: List[int]
+
+@app.post("/average")
+def post_average(numbers: Numbers):
+    return {"average": sum(numbers.numbers) / len(numbers.numbers)}
+

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Sample;
 using static Sample.Test;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,10 +55,26 @@ app.MapPost("/multiply", ([FromBody] Matrices data) =>
 
 #endregion
 
+#region  Part 3 Average Operation Comparison b/w .Net & Pyhton
+// Minimal API in C#
+app.MapPost("/average", ([FromBody] AverageClass numbers) =>
+{
+    double Average(List<int> nums) => nums.Average();
+    return Average(numbers.numbers);
+})
+.WithName("PostAverage")
+.WithOpenApi();
+
+#endregion
+
 app.Run();
 
 namespace Sample
 {
+    public class AverageClass
+    {
+        public required List<int> numbers {  get; set; }
+    }
     public static class Test
     {
         public record Matrices(int[][] Mat1, int[][] Mat2);
